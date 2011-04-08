@@ -1,0 +1,15 @@
+<!--
+Configuration for the AspectJ load-time weaver: it requires us to
+explicitly specify the aspects it should inject.
+ -->
+<aspectj>
+    <aspects>
+        <aspect name="iterate.jz2011.codeinjection.aspectj.LoggingAspect"/>
+    </aspects>
+
+	<!--
+	See http://www.eclipse.org/aspectj/doc/released/devguide/ltw-configuration.html#weaver-options
+	Interesting additional options: -debug
+	-->
+    <weaver options="-verbose -showWeaveInfo" />
+</aspectj>
