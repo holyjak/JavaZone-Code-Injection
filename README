@@ -1,0 +1,21 @@
+Code for my presentation of code injection at JavaZone 2011
+
+= Running the examples with Maven =
+I've been using Maven 2.2.1.
+1. Java Proxy: mvn -P javaproxy test
+2. Javassist:  mvn -P javassist test
+3. AspectJ:    mvn -P aspectj   test
+
+= Running the examples manually =
+* Get the dependencies described in pom.xml
+* Compile the sources
+* Run them:
+*# Java Proxy:
+*# Javassist:
+*# AspectJ: java "-javaagent:target/aspectj/aspectjweaver.jar" -classpath "target/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main
+
+= License =
+The code is in the public domain and fully available for any use, i.e. no licensing issues.
+
+= Copyleft =
+Jakub Holy of Iterate AS, 2011
