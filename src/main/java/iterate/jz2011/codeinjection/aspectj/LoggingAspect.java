@@ -37,7 +37,7 @@ public class LoggingAspect {
 		try {
 			return invocation.proceed();
 		} catch (Exception e) {
-			Logger.getLogger("aop").warning("LoggingAspect informs you that the method " +
+			Logger.getLogger("AspectJ").warning("LoggingAspect informs you that the method " +
 				invocation.getSignature().getName() + " failed for the input '" +
 				invocation.getArgs()[0] + "'. Original exception: " + e);
 			return null; // normally we would just rethrow it...

@@ -4,26 +4,26 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Remember values passed into a sql statement via setString etc. for later logging.
  *
  * Source: http://theholyjava.wordpress.com/2009/05/23/a-logging-wrapper-around-prepareds/
+ * (slightly adjusted)
  */
 class LoggingStatementDecorator implements InvocationHandler {
-
-    /** File's Subversion info (version etc.). */
-    public static final String SVN_ID = "$id$";
 
     private List<List<Object>> batch = new LinkedList<List<Object>>();
     private List<Object> currentRow = new LinkedList<Object>();
     private PreparedStatement target;
-    private boolean failed = false;
+    private int successfulBatchCounter = 0;
 
-    public LoggingStatementDecorator(PreparedStatement target) {
+    private LoggingStatementDecorator(PreparedStatement target) {
         if (target == null) throw new IllegalArgumentException("'target' can't be null.");
         this.target = target;
     }
@@ -32,20 +32,27 @@ class LoggingStatementDecorator implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
 
-        final Object result;
-
         try {
-            result = method.invoke(target, args);
-            failed = false;
+            Object result = method.invoke(target, args);
+            updateLog(method, args);
+            return result;
         } catch (InvocationTargetException e) {
-            failed = true;
-            throw e.getTargetException();
-        } catch (Exception e) {
-            failed = true;
-            throw e;
+        	Throwable cause = e.getTargetException();
+        	if (cause instanceof BatchUpdateException) {
+        		int failedBatchNr = successfulBatchCounter + 1;
+        		Logger.getLogger("JavaProxy").warning(
+        				"Batch update failed for batch# " + failedBatchNr +
+        				" (counting from 1) with values: [" +
+        				getValuesAsCsv() + "]. Cause: " + cause.getMessage());
+        		return null;
+        	}
+            throw cause;
         }
 
-        if ( method.getName().startsWith("setNull")
+    }
+
+	private void updateLog(Method method, Object[] args) {
+		if ( method.getName().startsWith("setNull")
                 && (args.length >=1 && Integer.TYPE == method.getParameterTypes()[0] ) ) {
             handleSetSomething((Integer) args[0], null);
         } else if ( method.getName().startsWith("set")
@@ -53,12 +60,18 @@ class LoggingStatementDecorator implements InvocationHandler {
             handleSetSomething((Integer) args[0], args[1]);
         } else if ("addBatch".equals(method.getName())) {
             handleAddBatch();
+        } else if ("executeBatch".equals(method.getName())) {
+            handleExecuteBatch();
         }
+	}
 
-        return result;
-    }
+    private void handleExecuteBatch() {
+    	++successfulBatchCounter;
+    	batch.clear();
 
-    private void handleSetSomething(int index, Object value) {
+	}
+
+	private void handleSetSomething(int index, Object value) {
         currentRow.add(value);
     }
 
@@ -72,11 +85,6 @@ class LoggingStatementDecorator implements InvocationHandler {
     }
 
     public PreparedStatement getTarget() { return target; }
-
-    /** Has the last method called on the Statement caused an exception? */
-    public boolean isFailed() { return failed; }
-
-    public String toString() { return "LoggingHandler[failed="+failed+"]"; }
 
     /** Values as comma-separated values. */
     public String getValuesAsCsv() {
@@ -94,11 +102,11 @@ class LoggingStatementDecorator implements InvocationHandler {
         return csv.toString();
     } /* getValuesAsCsv */
 
-    public PreparedStatement createProxy() {
+    public static PreparedStatement createProxy(PreparedStatement target) {
         return (PreparedStatement) Proxy.newProxyInstance(
                 PreparedStatement.class.getClassLoader(),
                 new Class[] { PreparedStatement.class },
-                this);
+                new LoggingStatementDecorator(target));
     };
 
 }

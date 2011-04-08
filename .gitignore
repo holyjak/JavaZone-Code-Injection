@@ -1,1 +1,3 @@
 target
+testData/testDB
+derby.log
