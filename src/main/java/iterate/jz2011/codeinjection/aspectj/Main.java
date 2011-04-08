@@ -3,8 +3,9 @@ package iterate.jz2011.codeinjection.aspectj;
 /**
  * Run the AspectJ example - adding parameter logging upon failure to
  * a 3rd party class/method.
- *
- * @author jholy
+ * <p>
+ * Run as follows:
+ * {@code java "-javaagent:target/aspectj/aspectjweaver.jar" -classpath "target/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main}
  *
  */
 public class Main {
