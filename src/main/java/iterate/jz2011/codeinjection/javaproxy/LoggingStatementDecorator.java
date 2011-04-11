@@ -41,6 +41,7 @@ class LoggingStatementDecorator implements InvocationHandler {
         	if (cause instanceof BatchUpdateException) {
         		int failedBatchNr = successfulBatchCounter + 1;
         		Logger.getLogger("JavaProxy").warning(
+        				"THE INJECTED CODE SAYS: " +
         				"Batch update failed for batch# " + failedBatchNr +
         				" (counting from 1) with values: [" +
         				getValuesAsCsv() + "]. Cause: " + cause.getMessage());

@@ -44,29 +44,34 @@ public class Main {
 	 * Initialize DB, perform updates.
 	 */
 	public static void main(String[] args) throws Exception {
+		System.out.println("\n############### Starting the Java Proxy example... ###############\n");
 
-		// Create the DB from the DDL
 		try {
-			net.jakubholy.testing.dbunit.embeddeddb.DatabaseCreator.createAndInitializeTestDb();
-		} catch (BatchUpdateException e) {/* perhaps the DB exists already*/}
+			// Create the DB from the DDL
+			try {
+				net.jakubholy.testing.dbunit.embeddeddb.DatabaseCreator.createAndInitializeTestDb();
+			} catch (BatchUpdateException e) {/* perhaps the DB exists already*/}
 
-		// Initialize DB connection, clear existing data from a previous run
-		testDb.onSetup();
+			// Initialize DB connection, clear existing data from a previous run
+			testDb.onSetup();
 
-		// Prepare & insert data!
-		@SuppressWarnings("serial")
-		Map<Integer, String> data = new HashMap<Integer, String>() {{
-			// Batch 0
-			put(100, "ok value 1");
-			put(200, "ok value 2");
-			// Batch 1
-			put(300, "ok value 3");
-			put(300, ILLEGAL_VALUE);
-			// Batch 2
-			put(400, "ok value 4");
-		}};
+			// Prepare & insert data!
+			@SuppressWarnings("serial")
+			Map<Integer, String> data = new HashMap<Integer, String>() {{
+				// Batch 0
+				put(100, "ok value 1");
+				put(200, "ok value 2");
+				// Batch 1
+				put(300, "ok value 3");
+				put(300, ILLEGAL_VALUE);
+				// Batch 2
+				put(400, "ok value 4");
+			}};
 
-		new Main().failingJdbcBatchInsert(testDb.getSqlConnection(), data);
+			new Main().failingJdbcBatchInsert(testDb.getSqlConnection(), data);
+		} finally {
+			System.out.println("\n############### DONE with the Java Proxy example ###############\n");
+		}
 
 	}
 
