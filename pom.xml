@@ -1,116 +1,185 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.jakubholy.example</groupId>
-  <artifactId>javazone-code-injection</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>JavaZone 2011 Code Injection Examples</name>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.aspectj</groupId>
-  		<artifactId>aspectjrt</artifactId>
-  		<version>1.6.10</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.javassist</groupId>
-  		<artifactId>javassist</artifactId>
-  		<version>3.14.0-GA</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.aspectj</groupId>
-  		<artifactId>aspectjweaver</artifactId>
-  		<version>1.6.10</version>
-  		<type>jar</type>
-  		<scope>runtime</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.jakubholy.testing</groupId>
-  		<artifactId>dbunit-embeddedderby-parenttest</artifactId>
-  		<version>1.2.0</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.slf4j</groupId>
-  		<artifactId>slf4j-simple</artifactId>
-  		<version>1.5.6</version>
-  		<type>jar</type>
-  		<scope>runtime</scope>
-  	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.jakubholy.example</groupId>
+	<artifactId>javazone-code-injection</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>JavaZone 2011 Code Injection Examples</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.10</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.14.0-GA</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.10</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.jakubholy.testing</groupId>
+			<artifactId>dbunit-embeddedderby-parenttest</artifactId>
+			<version>1.2.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.5.6</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
 
-  <profiles>
+	<profiles>
 
-  	<profile>
-  		<!-- Execute via 'mvn -P aspectj exec:exec' -->
-  		<id>aspectj</id>
-  		<build>
-		    <plugins>
+		<profile>
+			<!-- Execute via 'mvn -P aspectj exec:exec' -->
+			<id>aspectj</id>
+			<build>
+				<plugins>
 
-		    <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-dependency-plugin</artifactId>
-		        <version>2.2</version>
-		        <executions>
-		          <execution>
-		            <id>copy</id>
-		            <phase>compile</phase>
-		            <goals>
-		              <goal>copy</goal>
-		            </goals>
-		            <configuration>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.2</version>
+						<executions>
+							<execution>
+								<id>copy</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
 
-		              <artifactItems>
-		                <artifactItem>
-		                  <groupId>org.aspectj</groupId>
-					  	  <artifactId>aspectjweaver</artifactId>
-					  	  <version>1.6.10</version>
-					  	  <type>jar</type>
-		                  <overWrite>false</overWrite>
-		                </artifactItem>
-		              </artifactItems>
+									<artifactItems>
+										<artifactItem>
+											<groupId>org.aspectj</groupId>
+											<artifactId>aspectjweaver</artifactId>
+											<version>1.6.10</version>
+											<type>jar</type>
+											<overWrite>false</overWrite>
+										</artifactItem>
+									</artifactItems>
 
-		              <stripVersion>true</stripVersion>
-		              <outputDirectory>${project.build.directory}/aspectj</outputDirectory>
+									<stripVersion>true</stripVersion>
+									<outputDirectory>${project.build.directory}/aspectj</outputDirectory>
 
-		            </configuration>
-		          </execution>
-		        </executions>
-		      </plugin>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-		      <plugin>
-		        <groupId>org.codehaus.mojo</groupId>
-		        <artifactId>exec-maven-plugin</artifactId>
-		        <version>1.2</version>
-		        <executions>
-		          <execution>
-		          <phase>test</phase>
-		            <goals>
-		              <goal>exec</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-		        <configuration>
-		          <executable>java</executable>
-		          <arguments>
-		          	<argument>-javaagent:${project.build.directory}/aspectj/aspectjweaver.jar</argument>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<phase>test</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-javaagent:${project.build.directory}/aspectj/aspectjweaver.jar</argument>
 
-					<argument>-classpath</argument>
-            		<!-- automatically creates the classpath using all project dependencies,
-                 		also adding the project build directory -->
-            		<classpath/>
+								<argument>-classpath</argument>
+								<!-- automatically creates the classpath using all project dependencies,
+									also adding the project build directory -->
+								<classpath />
 
-            		<argument>iterate.jz2011.codeinjection.aspectj.Main</argument>
-		          </arguments>
-		        </configuration>
-		      </plugin>
-		    </plugins>
+								<argument>iterate.jz2011.codeinjection.aspectj.Main</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
 
-  		</build>
-  	</profile>
+			</build>
+		</profile>
 
-  </profiles>
+		<profile>
+			<id>javaproxy</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<phase>test</phase>
+								<goals>
+									<goal>java</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<mainClass>iterate.jz2011.codeinjection.javaproxy.Main</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>javassist</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>PerformInjection</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>java</goal>
+								</goals>
+								<configuration>
+									<mainClass>iterate.jz2011.codeinjection.javassist.JavassistInstrumenter</mainClass>
+								</configuration>
+							</execution>
+							<execution>
+								<id>InjectedAppExecution</id>
+								<phase>test</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>java</executable>
+									<arguments>
+										<!--
+										Make sure that target/javassist/ comes before target/classes/
+										so that the injected class replaces the original one
+										-->
+										<argument>-classpath</argument>
+										<argument>${project.build.directory}/javassist:${project.build.outputDirectory}</argument>
+										<argument>iterate.jz2011.codeinjection.javassist.Main</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 </project>
