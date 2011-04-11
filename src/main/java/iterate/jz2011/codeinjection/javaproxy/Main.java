@@ -10,6 +10,21 @@ import java.util.Map.Entry;
 
 import net.jakubholy.testing.dbunit.embeddeddb.EmbeddedDbTester;
 
+/**
+ * Run the Java Proxy example - decorate a JDBC PreparedStatement with a proxy, which
+ * will remember values passed into each batch and print them in the case that
+ * the execution of the batch fails - which happens when we pass in a string longer @
+ * than the target column allows.
+ * <p>
+ * There is no code injection phase - this is a Java Proxy and not a true AOP tool so
+ * we have to instantiate and apply it manually.
+ * <p>
+ * To make this example more fancy it uses DbUnit with a in-process Derby database
+ * so that we can use true JDBC. We use also (mine) EmbeddedDbTester to make initialization
+ * of the database and DbUnit simple.
+ * <p>
+ * See README for instructions how to run it.
+ */
 public class Main {
 
 	private static final int BATCH_SIZE = 2;
@@ -18,6 +33,13 @@ public class Main {
 
 	private static EmbeddedDbTester testDb = new EmbeddedDbTester();
 
+	/**
+	 * The JDBC method performing batch inserts of the data provided with batch size of
+	 * {@value #BATCH_SIZE}.
+	 * <p>
+	 * It explicitly uses the {@link LoggingStatementDecorator} instead of a raw
+	 * {@link PreparedStatement}.
+	 */
 	private void failingJdbcBatchInsert(Connection connection, Map<Integer, String> data) throws SQLException {
 
 		PreparedStatement rawPrepStmt = connection.prepareStatement("INSERT INTO my_test_schema.my_test_table (id,some_text) VALUES (?,?)");
@@ -41,7 +63,7 @@ public class Main {
 	}
 
 	/**
-	 * Initialize DB, perform updates.
+	 * Initialize DB, prepare data, perform inserts.
 	 */
 	public static void main(String[] args) throws Exception {
 		System.out.println("\n############### Starting the Java Proxy example... ###############\n");

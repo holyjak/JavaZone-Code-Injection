@@ -13,8 +13,6 @@ import javassist.NotFoundException;
 /**
  * Load the TargetClass.class file, modify it to measure and log the execution time of
  * its method {@code myMethod} and save it into a file.
- * You need to run the application with the folder with modified classes preceding the original
- * location on the classpath.
  *
  * @see http://theholyjava.wordpress.com/2010/06/25/implementing-build-time-instrumentation-with-javassist/
  */
@@ -25,17 +23,17 @@ public class JavassistInstrumenter {
 		final String targetFolder = "./target/javassist";
 
 		try {
-			// Advice TargetClass.myMethod(..) with a before and after advices
-
 			final ClassPool pool = ClassPool.getDefault();
 			// Tell Javassist where to look for classes - into our ClassLoader
 			pool.appendClassPath(new LoaderClassPath(getClass().getClassLoader()));
 			final CtClass compiledClass = pool.get(targetClass);
 			final CtMethod method = compiledClass.getDeclaredMethod(targetMethod);
 
-			 method.addLocalVariable("startMs", CtClass.longType);
-			 method.insertBefore("startMs = System.currentTimeMillis();");
-			 method.insertAfter("{final long endMs = System.currentTimeMillis();" +
+			// Add something to the beginning of the method:
+			method.addLocalVariable("startMs", CtClass.longType);
+			method.insertBefore("startMs = System.currentTimeMillis();");
+			// And also to its very end:
+			method.insertAfter("{final long endMs = System.currentTimeMillis();" +
 			   "iterate.jz2011.codeinjection.javassist.PerformanceMonitor.logPerformance(\"" +
 			   targetMethod + "\",(endMs-startMs));}");
 
@@ -51,6 +49,11 @@ public class JavassistInstrumenter {
 		}
 	}
 
+	/**
+	 * Run this to perform the injection of the code - the target class must be already
+	 * compiled and on the class path and its modified version will be written into
+	 * a special output folder.
+	 */
 	public static void main(String[] args) throws Exception {
 		final String defaultTargetClass = "iterate.jz2011.codeinjection.javassist.TargetClass";
 		final String defaultTargetMethod = "myMethod";

@@ -2,6 +2,10 @@ package iterate.jz2011.codeinjection.javassist;
 
 import java.util.logging.Logger;
 
+/**
+ * A simple class representing an entry into an hypothetical performance metric collection subsystem
+ * to have something more fancy than System.out.println(executionTime).
+ */
 public class PerformanceMonitor {
 
 	private static PerformanceMonitor instance = new PerformanceMonitor();

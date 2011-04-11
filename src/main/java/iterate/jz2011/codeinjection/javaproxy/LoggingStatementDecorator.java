@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Remember values passed into a sql statement via setString etc. for later logging.
+ * Remember values passed into a {@link PreparedStatement} via setString etc. for later logging.
  *
  * Source: http://theholyjava.wordpress.com/2009/05/23/a-logging-wrapper-around-prepareds/
- * (slightly adjusted)
+ * (partly adjusted)
  */
 class LoggingStatementDecorator implements InvocationHandler {
 
+	private PreparedStatement target;
     private List<List<Object>> batch = new LinkedList<List<Object>>();
     private List<Object> currentRow = new LinkedList<Object>();
-    private PreparedStatement target;
     private int successfulBatchCounter = 0;
 
     private LoggingStatementDecorator(PreparedStatement target) {
@@ -38,25 +38,36 @@ class LoggingStatementDecorator implements InvocationHandler {
             return result;
         } catch (InvocationTargetException e) {
         	Throwable cause = e.getTargetException();
-        	if (cause instanceof BatchUpdateException) {
-        		int failedBatchNr = successfulBatchCounter + 1;
-        		Logger.getLogger("JavaProxy").warning(
-        				"THE INJECTED CODE SAYS: " +
-        				"Batch update failed for batch# " + failedBatchNr +
-        				" (counting from 1) with values: [" +
-        				getValuesAsCsv() + "]. Cause: " + cause.getMessage());
+        	if (tryHandleFailure(cause))
         		return null;
-        	}
-            throw cause;
+        	else
+        		throw cause;
         }
 
     }
 
+	private boolean tryHandleFailure(Throwable cause) {
+		if (cause instanceof BatchUpdateException) {
+			int failedBatchNr = successfulBatchCounter + 1;
+			Logger.getLogger("JavaProxy").warning(
+					"THE INJECTED CODE SAYS: " +
+					"Batch update failed for batch# " + failedBatchNr +
+					" (counting from 1) with values: [" +
+					getValuesAsCsv() + "]. Cause: " + cause.getMessage());
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Store set* arguments, reset batch number etc as appropriate for the current type of call.
+	 */
 	private void updateLog(Method method, Object[] args) {
-		if ( method.getName().startsWith("setNull")
+		// All the interesting set<Something> methods have the signature: (int index, Something value [, ...])
+		if (method.getName().startsWith("setNull")
                 && (args.length >=1 && Integer.TYPE == method.getParameterTypes()[0] ) ) {
             handleSetSomething((Integer) args[0], null);
-        } else if ( method.getName().startsWith("set")
+        } else if (method.getName().startsWith("set")
                 && (args.length >=2 && Integer.TYPE == method.getParameterTypes()[0] ) ) {
             handleSetSomething((Integer) args[0], args[1]);
         } else if ("addBatch".equals(method.getName())) {
