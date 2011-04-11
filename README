@@ -1,18 +1,40 @@
 Code for my presentation of code injection at JavaZone 2011
 
+= Getting the code =
+Point your browser to
+	https://github.com/jakubholynet/JavaZone-Code-Injection/zipball/master
+and a ZIP archive download should start.
+
 = Running the examples with Maven =
 I've been using Maven 2.2.1.
-1. Java Proxy: mvn -P javaproxy test
-2. Javassist:  mvn -P javassist test
-3. AspectJ:    mvn -P aspectj   test
+	cd /path/into/the/downloaded/folder/where/pom.xml/is
+1. Java Proxy:
+	mvn -P javaproxy test
+2. Javassist:
+	mvn -P javassist test
+3. AspectJ:
+	mvn -P aspectj   test
 
 = Running the examples manually =
-* Get the dependencies described in pom.xml
+* Get the dependencies described in pom.xml and their transitive dependencies
 * Compile the sources
 * Run them:
 *# Java Proxy:
+*##	java -classpath <the dependencies listed below:/path/to/classes> iterate.jz2011.codeinjection.javaproxy.Main
 *# Javassist:
-*# AspectJ: java "-javaagent:target/aspectj/aspectjweaver.jar" -classpath "target/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main
+*##	java -classpath /path/to/javassist-3.14.0-GA.jar:/path/to/classes iterate.jz2011.codeinjection.javassist.JavassistInstrumenter
+*##	java -classpath target/javassist:/path/to/classes iterate.jz2011.codeinjection.javassist.Main
+*# AspectJ:
+*##	java "-javaagent:/path/to/aspectjweaver.jar" -classpath "/path/to/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main
+
+Dependencies for the Java Proxy example:
+ +- net.jakubholy.testing:dbunit-embeddedderby-parenttest:jar:1.2.0:compile
+ |  +- org.apache.derby:derby:jar:10.3.2.1:compile
+ |  +- org.dbunit:dbunit:jar:2.4.7:compile
+ |  |  \- commons-collections:commons-collections:jar:3.2.1:compile
+ |  +- junit:junit:jar:3.8.2:compile
+ |  \- org.slf4j:slf4j-api:jar:1.5.6:compile
+ \- org.slf4j:slf4j-simple:jar:1.5.6:runtime
 
 = License =
 The code is in the public domain and fully available for any use, i.e. no licensing issues.
