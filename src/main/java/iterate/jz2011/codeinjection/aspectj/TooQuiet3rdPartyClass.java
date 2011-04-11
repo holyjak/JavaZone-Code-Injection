@@ -14,7 +14,7 @@ public class TooQuiet3rdPartyClass {
 	 */
 	private void failingMethod(String someArgument) {
 		if("fail".equalsIgnoreCase(someArgument))
-			throw new RuntimeException("I'm an evil method, I've failed and won't tell why!");
+			throw new RuntimeException("I'm an evil method, I've failed and won't tell for what argument!");
 	}
 
 	public void batchProcess(String[] batchToProcess) {

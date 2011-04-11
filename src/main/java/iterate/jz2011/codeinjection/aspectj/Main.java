@@ -11,10 +11,18 @@ package iterate.jz2011.codeinjection.aspectj;
 public class Main {
 
 	public static void main(String[] args) {
-		String[] actualArgs = (args.length == 0)?
-				new String[]{"I'm ok!", null, "fail", "won't get till me..."}
-			: args;
-		new TooQuiet3rdPartyClass().batchProcess(actualArgs);
+		System.out.println("\n############### Starting the AspectJ example...###############\n");
+
+		try {
+
+			String[] actualArgs = (args.length == 0)?
+					new String[]{"I'm ok!", null, "fail", "won't get till me..."}
+				: args;
+			new TooQuiet3rdPartyClass().batchProcess(actualArgs);
+
+		} finally {
+			System.out.println("\n############### DONE with the AspectJ example ###############\n");
+		}
 	}
 
 }
