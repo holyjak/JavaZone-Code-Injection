@@ -1,5 +1,7 @@
 package iterate.jz2011.codeinjection.javassist;
 
+import java.util.logging.Logger;
+
 public class TargetClass {
 
 	/**
@@ -8,7 +10,17 @@ public class TargetClass {
 	public void myMethod() {
 		try {
 			Thread.sleep(100);
-		} catch (InterruptedException e) {}
+			Logger.getLogger("Javassist").info("Method done!");
+		} catch (InterruptedException e) {
+		}
+	}
+
+	public void myMethodSlower() {
+		try {
+			Thread.sleep(500);
+			Logger.getLogger("Javassist").info("Method done!");
+		} catch (InterruptedException e) {
+		}
 	}
 
 }

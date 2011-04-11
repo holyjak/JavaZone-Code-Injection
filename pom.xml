@@ -5,6 +5,17 @@
 	<artifactId>javazone-code-injection</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JavaZone 2011 Code Injection Examples</name>
+	<licenses>
+		<license>
+			<name>Public Domain</name>
+		</license>
+	</licenses>
+	<url>https://github.com/jakubholynet/JavaZone-Code-Injection</url>
+	<organization>
+		<name>Iterate AS</name>
+		<url>http://iterate.no/</url>
+	</organization>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -43,10 +54,24 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<!-- disable surefire plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 
 		<profile>
-			<!-- Execute via 'mvn -P aspectj exec:exec' -->
+			<!-- Execute via 'mvn -P aspectj test' -->
 			<id>aspectj</id>
 			<build>
 				<plugins>
@@ -113,6 +138,7 @@
 			</build>
 		</profile>
 
+		<!-- Execute via 'mvn -P javaproxy test' -->
 		<profile>
 			<id>javaproxy</id>
 			<build>
@@ -137,6 +163,7 @@
 			</build>
 		</profile>
 
+		<!-- Execute via 'mvn -P javassist test' -->
 		<profile>
 			<id>javassist</id>
 			<build>
@@ -154,6 +181,12 @@
 								</goals>
 								<configuration>
 									<mainClass>iterate.jz2011.codeinjection.javassist.JavassistInstrumenter</mainClass>
+									<!-- Optional: run the other method
+									<arguments>
+										<argument>iterate.jz2011.codeinjection.javassist.TargetClass</argument>
+										<argument>myMethodSlower</argument>
+									</arguments>
+									-->
 								</configuration>
 							</execution>
 							<execution>
@@ -165,10 +198,8 @@
 								<configuration>
 									<executable>java</executable>
 									<arguments>
-										<!--
-										Make sure that target/javassist/ comes before target/classes/
-										so that the injected class replaces the original one
-										-->
+										<!-- Make sure that target/javassist/ comes before target/classes/
+											so that the injected class replaces the original one -->
 										<argument>-classpath</argument>
 										<argument>${project.build.directory}/javassist:${project.build.outputDirectory}</argument>
 										<argument>iterate.jz2011.codeinjection.javassist.Main</argument>

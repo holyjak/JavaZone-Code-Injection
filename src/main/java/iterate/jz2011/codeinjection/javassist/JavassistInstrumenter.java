@@ -20,10 +20,8 @@ import javassist.NotFoundException;
  */
 public class JavassistInstrumenter {
 
-	public void insertTimingIntoMethod() throws NotFoundException, CannotCompileException, IOException {
+	public void insertTimingIntoMethod(String targetClass, String targetMethod) throws NotFoundException, CannotCompileException, IOException {
 		Logger logger = Logger.getLogger("Javassist");
-		final String targetClass = "iterate.jz2011.codeinjection.javassist.TargetClass";
-		final String targetMethod = "myMethod";
 		final String targetFolder = "./target/javassist";
 
 		try {
@@ -44,7 +42,8 @@ public class JavassistInstrumenter {
 			compiledClass.writeFile(targetFolder);
 			// Enjoy the new $targetFolder/iterate/jz2011/codeinjection/javassist/TargetClass.class
 
-			logger.info("The modified class has been saved under " + targetFolder);
+			logger.info(targetClass + "." + targetMethod +
+					" has been modified and saved under " + targetFolder);
 		} catch (NotFoundException e) {
 			logger.warning("Failed to find the target class to modify, " +
 					targetClass + ", verify that it ClassPool has been configured to look " +
@@ -53,7 +52,14 @@ public class JavassistInstrumenter {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new JavassistInstrumenter().insertTimingIntoMethod();
+		final String defaultTargetClass = "iterate.jz2011.codeinjection.javassist.TargetClass";
+		final String defaultTargetMethod = "myMethod";
+		final boolean targetProvided = args.length == 2;
+
+		new JavassistInstrumenter().insertTimingIntoMethod(
+				targetProvided? args[0] : defaultTargetClass
+				, targetProvided? args[1] : defaultTargetMethod
+		);
 	}
 
 }
