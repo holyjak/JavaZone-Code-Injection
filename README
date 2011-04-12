@@ -1,5 +1,7 @@
 Code for my presentation of code injection at JavaZone 2011
 
+Get the code, run it and look for 'THE INJECTED CODE SAYS:' in its output.
+
 = Getting the code =
 Point your browser to
 	https://github.com/jakubholynet/JavaZone-Code-Injection/zipball/master
