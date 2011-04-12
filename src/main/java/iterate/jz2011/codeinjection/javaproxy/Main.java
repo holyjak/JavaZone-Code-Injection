@@ -91,6 +91,8 @@ public class Main {
 			}};
 
 			new Main().failingJdbcBatchInsert(testDb.getSqlConnection(), data);
+		} catch (BatchUpdateException e) {
+			// ignore - already logged
 		} finally {
 			System.out.println("\n############### DONE with the Java Proxy example ###############\n");
 		}

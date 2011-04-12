@@ -38,15 +38,13 @@ class LoggingStatementDecorator implements InvocationHandler {
             return result;
         } catch (InvocationTargetException e) {
         	Throwable cause = e.getTargetException();
-        	if (tryHandleFailure(cause))
-        		return null;
-        	else
-        		throw cause;
+        	tryLogFailure(cause);
+        	throw cause;
         }
 
     }
 
-	private boolean tryHandleFailure(Throwable cause) {
+	private void tryLogFailure(Throwable cause) {
 		if (cause instanceof BatchUpdateException) {
 			int failedBatchNr = successfulBatchCounter + 1;
 			Logger.getLogger("JavaProxy").warning(
@@ -54,9 +52,7 @@ class LoggingStatementDecorator implements InvocationHandler {
 					"Batch update failed for batch# " + failedBatchNr +
 					" (counting from 1) with values: [" +
 					getValuesAsCsv() + "]. Cause: " + cause.getMessage());
-			return true;
 		}
-		return false;
 	}
 
 	/**
