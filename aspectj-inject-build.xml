@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="aspectj_code_injection" default="inject_binaries">
+	<description>
+            Inject the AspectJ aspect into the compiled target .class via AspectJ Ant task
+    </description>
+
+	<!-- =================================
+          target: inject_binaries
+         ================================= -->
+	<target name="inject_binaries">
+
+		<!--
+		This build must be run from Maven to have the maven classpath references defined!
+		Otherwise you'd need to define them yourselfm similarly to:
+
+		<path id="maven.plugin.classpath">
+			<pathelement location="${user.home}/.m2/repository/org/aspectj/aspectjtools/1.6.10/aspectjtools-1.6.10.jar"/>
+		</path>
+		<path id="maven.compile.classpath">
+			<pathelement location="${user.home}/.m2/repository/org/aspectj/aspectjrt/1.6.10/aspectjrt-1.6.10.jar"/>
+			<pathelement location="target/classes"/>
+		</path>
+		-->
+
+		<taskdef
+			resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties"
+			classpathref="maven.plugin.classpath" />
+
+		<iajc
+			inpath="target/classes"
+			destDir="target/classes"
+			verbose="false"
+			showWeaveInfo="true"
+			source="1.6"
+			classpathRef="maven.compile.classpath"
+			Xlint="ignore">
+
+			<exclude name="iterate/jz2011/codeinjection/aspectj/LoggingAspect.java" />
+		</iajc>
+
+		<echo id="inject_binaries" level="info">ANT has finished injecting AspectJ aspects into classes in target/classes/</echo>
+	</target>
+
+</project>

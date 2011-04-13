@@ -27,7 +27,9 @@ I've been using Maven 2.2.1.
 *##	java -classpath /path/to/javassist-3.14.0-GA.jar:/path/to/classes iterate.jz2011.codeinjection.javassist.JavassistInstrumenter
 *##	java -classpath target/javassist:/path/to/classes iterate.jz2011.codeinjection.javassist.Main
 *# AspectJ:
-*##	java "-javaagent:/path/to/aspectjweaver.jar" -classpath "/path/to/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main
+*## In aspectj-inject-build.xml define maven.plugin.classpath as described
+*## ant -f aspectj-inject-build.xml
+*##	java -classpath "/path/to/classes:/path/to/aspectjrt-1.6.10.jar" iterate.jz2011.codeinjection.aspectj.Main
 
 Dependencies for the Java Proxy example:
  +- net.jakubholy.testing:dbunit-embeddedderby-parenttest:jar:1.2.0:compile

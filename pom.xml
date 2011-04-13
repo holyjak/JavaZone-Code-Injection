@@ -108,6 +108,33 @@
 					</plugin>
 
 					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.6</version>
+						<dependencies>
+							<dependency>
+								<groupId>org.aspectj</groupId>
+								<artifactId>aspectjtools</artifactId> <!-- contains the AspectJ Ant plugin -->
+								<version>1.6.10</version>
+							</dependency>
+						</dependencies>
+
+						<executions>
+							<execution>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<!-- inheritRefs=true to pass in the maven classpath refs -->
+										<ant antfile="aspectj-inject-build.xml" inheritRefs="true" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<version>1.2</version>
@@ -122,7 +149,10 @@
 						<configuration>
 							<executable>java</executable>
 							<arguments>
+
+								<!-- Aspect woven staticaly by Maven => no need for the load-time weaving agentlib:
 								<argument>-javaagent:${project.build.directory}/aspectj/aspectjweaver.jar</argument>
+								 -->
 
 								<argument>-classpath</argument>
 								<!-- automatically creates the classpath using all project dependencies,
@@ -181,12 +211,8 @@
 								</goals>
 								<configuration>
 									<mainClass>iterate.jz2011.codeinjection.javassist.JavassistInstrumenter</mainClass>
-									<!-- Optional: run the other method
-									<arguments>
-										<argument>iterate.jz2011.codeinjection.javassist.TargetClass</argument>
-										<argument>myMethodSlower</argument>
-									</arguments>
-									-->
+									<!-- Optional: run the other method <arguments> <argument>iterate.jz2011.codeinjection.javassist.TargetClass</argument>
+										<argument>myMethodSlower</argument> </arguments> -->
 								</configuration>
 							</execution>
 							<execution>
