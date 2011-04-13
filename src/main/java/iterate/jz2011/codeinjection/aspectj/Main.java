@@ -1,5 +1,6 @@
 package iterate.jz2011.codeinjection.aspectj;
 
+
 /**
  * Run the AspectJ example - inject logging of method arguments in the case of an exception to
  * a 3rd party class/method.
@@ -21,6 +22,8 @@ public class Main {
 
 			new TooQuiet3rdPartyClass().batchProcess(actualArgs);
 
+		} catch (Exception e) {
+			// ignore - already logged
 		} finally {
 			System.out.println("\n############### DONE with the AspectJ example ###############\n");
 		}

@@ -12,12 +12,12 @@ public class TooQuiet3rdPartyClass {
 	 * during a single invocation of a higher-level public method
 	 * and failing for one of the input values.
 	 */
-	private void failingMethod(String someArgument) {
+	private void failingMethod(String someArgument) throws Exception {
 		if("failNow!".equalsIgnoreCase(someArgument))
-			throw new RuntimeException("I'm an evil method, I've failed and won't tell for what argument!");
+			throw new Exception("I'm an evil method, I've failed and won't tell for what argument!");
 	}
 
-	public void batchProcess(String[] batchToProcess) {
+	public void batchProcess(String[] batchToProcess) throws Exception {
 		for (String currentArgument : batchToProcess) {
 			this.failingMethod(currentArgument);
 		}

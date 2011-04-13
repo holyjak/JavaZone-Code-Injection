@@ -46,7 +46,7 @@ public class LoggingAspect {
 				"THE INJECTED CODE SAYS: the method " +
 				invocation.getSignature().getName() + " failed for the input '" +
 				invocation.getArgs()[0] + "'. Original exception: " + e);
-			return null; // normally we would just rethrow it...
+			throw e;
 		}
 	}
 
