@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="aspectj_code_injection" default="inject_binaries">
 	<description>
-            Inject the AspectJ aspect into the compiled target .class via AspectJ Ant task
-    </description>
+			Inject the AspectJ aspect into the compiled target .class via AspectJ Ant task
+	</description>
 
 	<!-- =================================
-          target: inject_binaries
-         ================================= -->
+		  target: inject_binaries
+		 ================================= -->
 	<target name="inject_binaries">
 
 		<!--
