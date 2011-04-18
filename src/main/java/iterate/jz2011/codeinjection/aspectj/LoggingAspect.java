@@ -15,8 +15,8 @@ import org.aspectj.lang.annotation.Aspect;
  * {@code @org.aspectj.lang.annotation.AfterThrowing(exception name)}, which would
  * be more suitable in this case.
  * <p>
- * The code can be injected ("woven") into the target class at compile time by
- * a special tool or at runtime using the AspectJ's Java 5 agent library:
+ * The code can be injected ("woven") into the target class at build time by
+ * an Ant task - iajc - or at runtime using the AspectJ's Java 5 agent library:
  * {@code java -javaagent:/path/to/aspectjweaver.jar YourMainClass}
  */
 @Aspect
